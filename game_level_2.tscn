@@ -1,0 +1,637 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game.gd" id="1_game_script"]
+[ext_resource type="Texture2D" path="res://assets/Map- BG.png" id="2_map_bg"]
+[ext_resource type="Texture2D" path="res://assets/parallax-space-big-planet.png" id="3_big_planet"]
+[ext_resource type="Texture2D" path="res://assets/parallax-space-ring-planet.png" id="4_ring_planet"]
+[ext_resource type="Texture2D" path="res://assets/Small Planet.png" id="5_small_planet"]
+[ext_resource type="Texture2D" path="res://assets/Metal Block 1x4.png" id="6_metal_1x4"]
+[ext_resource type="Texture2D" path="res://assets/Metal Block 1x2.png" id="7_metal_1x2"]
+[ext_resource type="Texture2D" path="res://assets/Metal Block 1x1.png" id="8_metal_1x1"]
+[ext_resource type="PackedScene" path="res://player.tscn" id="9_player_scene"]
+[ext_resource type="PackedScene" path="res://ball.tscn" id="10_ball_scene"]
+[ext_resource type="PackedScene" path="res://asteroid.tscn" id="11_asteroid_scene"]
+[ext_resource type="PackedScene" path="res://spike.tscn" id="12_spike_scene"]
+[ext_resource type="PackedScene" path="res://checkpoint.tscn" id="13_checkpoint_scene"]
+[ext_resource type="PackedScene" path="res://currency.tscn" id="14_currency_scene"]
+[ext_resource type="PackedScene" path="res://physical_button.tscn" id="15_button_scene"]
+[ext_resource type="PackedScene" path="res://corruption_hazard.tscn" id="16_corruption_scene"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
+size = Vector2(1920, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_1x4"]
+size = Vector2(256, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_1x2"]
+size = Vector2(128, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_1x1"]
+size = Vector2(64, 64)
+
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.65, 0.85, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.01, 0.02, 0.04, 0.98)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.95, 0.95)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud"]
+bg_color = Color(0.1, 0.1, 0.14, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.33, 0.42, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vic"]
+bg_color = Color(0.1, 0.1, 0.14, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.38, 0.48, 1)
+
+[node name="GameLevel2" type="Node2D"]
+script = ExtResource("1_game_script")
+next_scene_path = "res://main_menu.tscn"
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("2_map_bg")
+
+[node name="CosmicProps" type="Node2D" parent="."]
+
+[node name="RingPlanet" type="Sprite2D" parent="CosmicProps"]
+position = Vector2(1450, 850)
+scale = Vector2(2, 2)
+texture = ExtResource("4_ring_planet")
+
+[node name="BigPlanet" type="Sprite2D" parent="CosmicProps"]
+position = Vector2(350, 260)
+scale = Vector2(2, 2)
+texture = ExtResource("3_big_planet")
+
+[node name="ClosedMapWalls" type="StaticBody2D" parent="."]
+collision_mask = 3
+
+[node name="TopWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(960, 32)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="BottomWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(960, 1048)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="LeftWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(32, 540)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="RightWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(1888, 540)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="TopBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="T1" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(128, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T2" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(384, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T3" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(640, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T4" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(896, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T5" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1152, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T6" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1408, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T7" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1664, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T8" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1856, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="BottomBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="B1" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(128, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B2" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(384, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B3" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(640, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B4" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(896, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B5" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1152, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B6" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1408, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B7" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1664, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B8" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1856, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="LeftBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="L1" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 192)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="L2" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 448)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="L3" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 704)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="L4" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 928)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="RightBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="R_Top" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 96)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="R_DarkSection" type="Node2D" parent="ClosedMapWalls/RightBlocks"]
+modulate = Color(0.42, 0.45, 0.55, 1)
+
+[node name="Dark1" type="Sprite2D" parent="ClosedMapWalls/RightBlocks/R_DarkSection"]
+position = Vector2(1888, 176)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="Dark2" type="Sprite2D" parent="ClosedMapWalls/RightBlocks/R_DarkSection"]
+position = Vector2(1888, 240)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="Dark3" type="Sprite2D" parent="ClosedMapWalls/RightBlocks/R_DarkSection"]
+position = Vector2(1888, 304)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="R1" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 480)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="R2" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 736)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="R3" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 960)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="RightWallSpikes" type="Node2D" parent="."]
+
+[node name="Spike_R_Top" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 96)
+rotation = -1.5708
+
+[node name="Spike_R1" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 370)
+rotation = -1.5708
+
+[node name="Spike_R2" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 430)
+rotation = -1.5708
+
+[node name="Spike_R3" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 490)
+rotation = -1.5708
+
+[node name="Spike_R4" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 550)
+rotation = -1.5708
+
+[node name="Spike_R5" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 610)
+rotation = -1.5708
+
+[node name="Spike_R6" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 670)
+rotation = -1.5708
+
+[node name="Spike_R7" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 730)
+rotation = -1.5708
+
+[node name="Spike_R8" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 790)
+rotation = -1.5708
+
+[node name="Spike_R9" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 850)
+rotation = -1.5708
+
+[node name="Spike_R10" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 910)
+rotation = -1.5708
+
+[node name="Spike_R11" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 970)
+rotation = -1.5708
+
+[node name="Sector2Obstacles" type="Node2D" parent="."]
+
+[node name="Col1" type="StaticBody2D" parent="Sector2Obstacles"]
+position = Vector2(500, 480)
+
+[node name="Sprite2D" type="Sprite2D" parent="Sector2Obstacles/Col1"]
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sector2Obstacles/Col1"]
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_plat_1x4")
+
+[node name="Col2" type="StaticBody2D" parent="Sector2Obstacles"]
+position = Vector2(960, 320)
+
+[node name="Sprite2D" type="Sprite2D" parent="Sector2Obstacles/Col2"]
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sector2Obstacles/Col2"]
+shape = SubResource("RectangleShape2D_plat_1x4")
+
+[node name="Col3" type="StaticBody2D" parent="Sector2Obstacles"]
+position = Vector2(960, 760)
+
+[node name="Sprite2D" type="Sprite2D" parent="Sector2Obstacles/Col3"]
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sector2Obstacles/Col3"]
+shape = SubResource("RectangleShape2D_plat_1x4")
+
+[node name="Col4" type="StaticBody2D" parent="Sector2Obstacles"]
+position = Vector2(1420, 580)
+
+[node name="Sprite2D" type="Sprite2D" parent="Sector2Obstacles/Col4"]
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sector2Obstacles/Col4"]
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_plat_1x4")
+
+[node name="Spikes_S2" type="Node2D" parent="."]
+
+[node name="Spike_Top1" parent="Spikes_S2" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(960, 265)
+
+[node name="Spike_Bottom1" parent="Spikes_S2" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(960, 815)
+rotation = 3.14159
+
+[node name="Asteroids" type="Node2D" parent="."]
+
+[node name="Asteroid1" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(720, 250)
+speed = 135.0
+move_axis = Vector2(0, 1)
+
+[node name="Asteroid2" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(720, 850)
+speed = 135.0
+move_axis = Vector2(0, -1)
+
+[node name="Asteroid3" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(1200, 400)
+speed = 140.0
+move_axis = Vector2(1, 0)
+
+[node name="Asteroid4" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(1200, 700)
+speed = 140.0
+move_axis = Vector2(-1, 0)
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="CenterCheckpoint" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource("13_checkpoint_scene")]
+position = Vector2(960, 540)
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="Currency1" parent="Collectibles" groups=["collectibles"] instance=ExtResource("14_currency_scene")]
+position = Vector2(720, 540)
+
+[node name="Currency2" parent="Collectibles" groups=["collectibles"] instance=ExtResource("14_currency_scene")]
+position = Vector2(1200, 540)
+
+[node name="CorruptionHazards" type="Node2D" parent="."]
+
+[node name="Corr1" parent="CorruptionHazards" instance=ExtResource("16_corruption_scene")]
+position = Vector2(480, 420)
+scale = Vector2(2.8, 2.8)
+corruption_stage = 2
+
+[node name="Corr2" parent="CorruptionHazards" instance=ExtResource("16_corruption_scene")]
+position = Vector2(800, 720)
+scale = Vector2(2.8, 2.8)
+corruption_stage = 3
+
+[node name="Corr3" parent="CorruptionHazards" instance=ExtResource("16_corruption_scene")]
+position = Vector2(1100, 360)
+scale = Vector2(3.0, 3.0)
+corruption_stage = 3
+
+[node name="Corr4" parent="CorruptionHazards" instance=ExtResource("16_corruption_scene")]
+position = Vector2(1380, 680)
+scale = Vector2(3.0, 3.0)
+corruption_stage = 4
+
+[node name="Corr5" parent="CorruptionHazards" instance=ExtResource("16_corruption_scene")]
+position = Vector2(1580, 440)
+scale = Vector2(3.2, 3.2)
+corruption_stage = 4
+
+[node name="Corr6" parent="CorruptionHazards" instance=ExtResource("16_corruption_scene")]
+position = Vector2(1680, 320)
+scale = Vector2(3.5, 3.5)
+corruption_stage = 5
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(240, 880)
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("9_player_scene")]
+position = Vector2(240, 880)
+
+[node name="Ball" parent="." instance=ExtResource("10_ball_scene")]
+position = Vector2(240, 880)
+
+[node name="PhysicalButton" parent="." instance=ExtResource("15_button_scene")]
+position = Vector2(1720, 240)
+
+[node name="HUDLayer" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="MarginContainer" parent="HUDLayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 66.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 28
+
+[node name="PanelContainer" type="PanelContainer" parent="HUDLayer/TopBar"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hud")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUDLayer/TopBar/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDLayer/TopBar/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="SectorLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "SECTOR 02: THE DEEP CORE"
+
+[node name="Spacer" type="Control" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="ModeLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "🟢 RECON RUN"
+
+[node name="Spacer2" type="Control" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnergyLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 17
+text = "⚡ Energy: 0"
+
+[node name="Spacer3" type="Control" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="DeathsLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 17
+text = "💀 Deaths: 0"
+
+[node name="IntroBanner" type="Label" parent="HUDLayer"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -25.0
+offset_right = 320.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.3, 0.95, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 30
+text = "[ SECTOR 02 // INFILTRATING ]"
+horizontal_alignment = 1
+
+[node name="CheckpointPopup" type="Label" parent="HUDLayer"]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 80.0
+offset_right = 200.0
+offset_bottom = 120.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.6, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "✓ CHECKPOINT SAVED"
+horizontal_alignment = 1
+
+[node name="Vignette" type="TextureRect" parent="HUDLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+
+[node name="BottomHint" type="Label" parent="HUDLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -420.0
+offset_top = -42.0
+offset_right = 420.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.7)
+theme_override_font_sizes/font_size = 15
+text = "[LMB] Throw Ball   •   [RMB] Recall Ball   •   [R] Quick Reset   •   [ESC] Main Menu"
+horizontal_alignment = 1
+
+[node name="DeathFlash" type="ColorRect" parent="HUDLayer"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.9, 0.1, 0.15, 0.4)
+
+[node name="VictoryPanel" type="PanelContainer" parent="HUDLayer"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -180.0
+offset_right = 300.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vic")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUDLayer/VictoryPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUDLayer/VictoryPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.7, 1)
+theme_override_font_sizes/font_size = 28
+text = "MISSION ACCOMPLISHED!"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Verity bypassed all FBI sectors using Newton's Fourth Law recoil physics. Total escape achieved!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PlayAgainButton" type="Button" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "↺ REPLAY"
+
+[node name="MenuButton" type="Button" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "☰ MAIN MENU"

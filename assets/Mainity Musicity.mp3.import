@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dn17hhae3taj3"
+path="res://.godot/imported/Mainity Musicity.mp3-81b963cf3fa17ffb8de350a9cde82013.mp3str"
+
+[deps]
+
+source_file="res://assets/Mainity Musicity.mp3"
+dest_files=["res://.godot/imported/Mainity Musicity.mp3-81b963cf3fa17ffb8de350a9cde82013.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

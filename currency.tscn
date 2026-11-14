@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://currency.gd" id="1_currency_script"]
+[ext_resource type="Texture2D" path="res://assets/Currency.png" id="2_currency_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_currency"]
+radius = 24.0
+
+[node name="Currency" type="Area2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_currency_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("2_currency_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_currency")

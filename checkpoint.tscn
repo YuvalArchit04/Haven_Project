@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://checkpoint.gd" id="1_checkpoint_script"]
+[ext_resource type="Texture2D" path="res://assets/Small Planet.png" id="2_planet_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cp"]
+radius = 40.0
+
+[node name="Checkpoint" type="Area2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_checkpoint_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("2_planet_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_cp")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = 32.0
+offset_right = 80.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "CHECKPOINT BEACON"
+horizontal_alignment = 1

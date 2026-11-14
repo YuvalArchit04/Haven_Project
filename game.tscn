@@ -1,0 +1,925 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game.gd" id="1_game_script"]
+[ext_resource type="Texture2D" path="res://assets/Map- BG.png" id="2_map_bg"]
+[ext_resource type="Texture2D" path="res://assets/parallax-space-big-planet.png" id="3_big_planet"]
+[ext_resource type="Texture2D" path="res://assets/parallax-space-ring-planet.png" id="4_ring_planet"]
+[ext_resource type="Texture2D" path="res://assets/Small Planet.png" id="5_small_planet"]
+[ext_resource type="Texture2D" path="res://assets/Metal Block 1x4.png" id="6_metal_1x4"]
+[ext_resource type="Texture2D" path="res://assets/Metal Block 1x2.png" id="7_metal_1x2"]
+[ext_resource type="Texture2D" path="res://assets/Metal Block 1x1.png" id="8_metal_1x1"]
+[ext_resource type="PackedScene" path="res://player.tscn" id="9_player_scene"]
+[ext_resource type="PackedScene" path="res://ball.tscn" id="10_ball_scene"]
+[ext_resource type="PackedScene" path="res://asteroid.tscn" id="11_asteroid_scene"]
+[ext_resource type="PackedScene" path="res://spike.tscn" id="12_spike_scene"]
+[ext_resource type="PackedScene" path="res://checkpoint.tscn" id="13_checkpoint_scene"]
+[ext_resource type="PackedScene" path="res://currency.tscn" id="14_currency_scene"]
+[ext_resource type="PackedScene" path="res://physical_button.tscn" id="15_button_scene"]
+[ext_resource type="VideoStream" path="res://assets/verity_prize.ogv" id="16_prize_video"]
+[ext_resource type="PackedScene" path="res://corruption_hazard.tscn" id="17_corruption_scene"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
+size = Vector2(1920, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_1x4"]
+size = Vector2(256, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_1x2"]
+size = Vector2(128, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_1x1"]
+size = Vector2(64, 64)
+
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.65, 0.85, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.01, 0.02, 0.04, 0.98)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.95, 0.95)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud"]
+bg_color = Color(0.1, 0.1, 0.14, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.33, 0.42, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vic"]
+bg_color = Color(0.1, 0.1, 0.14, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.38, 0.48, 1)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_game_script")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("2_map_bg")
+
+[node name="CosmicProps" type="Node2D" parent="."]
+
+[node name="RingPlanet" type="Sprite2D" parent="CosmicProps"]
+position = Vector2(450, 180)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("4_ring_planet")
+
+[node name="BigPlanet" type="Sprite2D" parent="CosmicProps"]
+position = Vector2(1650, 230)
+scale = Vector2(1.8, 1.8)
+texture = ExtResource("3_big_planet")
+
+[node name="SmallPlanet" type="Sprite2D" parent="CosmicProps"]
+position = Vector2(1050, 880)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("5_small_planet")
+
+[node name="ClosedMapWalls" type="StaticBody2D" parent="."]
+collision_mask = 3
+
+[node name="TopWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(960, 32)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="BottomWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(960, 1048)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="LeftWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(32, 540)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="RightWallCol" type="CollisionShape2D" parent="ClosedMapWalls"]
+position = Vector2(1888, 540)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="TopBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="T1" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(128, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T2" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(384, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T3" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(640, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T4" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(896, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T5" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1152, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T6" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1408, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T7" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1664, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="T8" type="Sprite2D" parent="ClosedMapWalls/TopBlocks"]
+position = Vector2(1856, 32)
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="BottomBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="B1" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(128, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B2" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(384, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B3" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(640, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B4" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(896, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B5" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1152, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B6" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1408, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B7" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1664, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="B8" type="Sprite2D" parent="ClosedMapWalls/BottomBlocks"]
+position = Vector2(1856, 1048)
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="LeftBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="L1" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 192)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="L2" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 448)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="L3" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 704)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="L4" type="Sprite2D" parent="ClosedMapWalls/LeftBlocks"]
+position = Vector2(32, 928)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="RightBlocks" type="Node2D" parent="ClosedMapWalls"]
+
+[node name="R_Top" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 96)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="R_DarkSection" type="Node2D" parent="ClosedMapWalls/RightBlocks"]
+modulate = Color(0.38, 0.40, 0.48, 1)
+
+[node name="Dark1" type="Sprite2D" parent="ClosedMapWalls/RightBlocks/R_DarkSection"]
+position = Vector2(1888, 176)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="Dark2" type="Sprite2D" parent="ClosedMapWalls/RightBlocks/R_DarkSection"]
+position = Vector2(1888, 240)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="Dark3" type="Sprite2D" parent="ClosedMapWalls/RightBlocks/R_DarkSection"]
+position = Vector2(1888, 304)
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="R1" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 480)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="R2" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 736)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="R3" type="Sprite2D" parent="ClosedMapWalls/RightBlocks"]
+position = Vector2(1888, 960)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+[node name="RightWallSpikes" type="Node2D" parent="."]
+
+[node name="Spike_R_Top" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 96)
+rotation = -1.5708
+[node name="Spike_R_370" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 370)
+rotation = -1.5708
+[node name="Spike_R_420" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 420)
+rotation = -1.5708
+[node name="Spike_R_470" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 470)
+rotation = -1.5708
+[node name="Spike_R_520" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 520)
+rotation = -1.5708
+[node name="Spike_R_570" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 570)
+rotation = -1.5708
+[node name="Spike_R_620" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 620)
+rotation = -1.5708
+[node name="Spike_R_670" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 670)
+rotation = -1.5708
+[node name="Spike_R_720" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 720)
+rotation = -1.5708
+[node name="Spike_R_770" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 770)
+rotation = -1.5708
+[node name="Spike_R_820" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 820)
+rotation = -1.5708
+[node name="Spike_R_870" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 870)
+rotation = -1.5708
+[node name="Spike_R_920" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 920)
+rotation = -1.5708
+[node name="Spike_R_970" parent="RightWallSpikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(1845, 970)
+rotation = -1.5708
+[node name="SketchCorridors" type="Node2D" parent="."]
+
+[node name="CorridorDivider1" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(500, 890)
+
+[node name="Sprite1" type="Sprite2D" parent="SketchCorridors/CorridorDivider1"]
+position = Vector2(-128, 0)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite2" type="Sprite2D" parent="SketchCorridors/CorridorDivider1"]
+position = Vector2(128, 0)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/CorridorDivider1"]
+shape = SubResource("RectangleShape2D_wall_h")
+position = Vector2(0, 0)
+scale = Vector2(0.27, 1)
+
+[node name="AngledTurnWall" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(820, 890)
+rotation = 0.785398
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/AngledTurnWall"]
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/AngledTurnWall"]
+shape = SubResource("RectangleShape2D_plat_1x2")
+
+[node name="VerticalWall1" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(256, 680)
+
+[node name="Sprite1" type="Sprite2D" parent="SketchCorridors/VerticalWall1"]
+position = Vector2(0, -96)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite2" type="Sprite2D" parent="SketchCorridors/VerticalWall1"]
+position = Vector2(0, 96)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/VerticalWall1"]
+shape = SubResource("RectangleShape2D_plat_1x4")
+rotation = 1.5708
+scale = Vector2(1.5, 1)
+
+[node name="UGauntlet_TopWall" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(500, 200)
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/UGauntlet_TopWall"]
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/UGauntlet_TopWall"]
+shape = SubResource("RectangleShape2D_plat_1x4")
+
+[node name="UGauntlet_Drop" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(660, 280)
+rotation = 1.5708
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/UGauntlet_Drop"]
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/UGauntlet_Drop"]
+shape = SubResource("RectangleShape2D_plat_1x2")
+
+[node name="UGauntlet_Spikes" type="Node2D" parent="SketchCorridors"]
+
+[node name="Spike_UT1" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(420, 145)
+
+[node name="Spike_UT2" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(500, 145)
+
+[node name="Spike_UT3" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(580, 145)
+
+[node name="Spike_UB1" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(420, 255)
+rotation = 3.14159
+
+[node name="Spike_UB2" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(500, 255)
+rotation = 3.14159
+
+[node name="Spike_UB3" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(580, 255)
+rotation = 3.14159
+
+[node name="Spike_UR1" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(715, 230)
+rotation = 1.5708
+
+[node name="Spike_UR2" parent="SketchCorridors/UGauntlet_Spikes" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(715, 310)
+rotation = 1.5708
+
+[node name="LowerPlatform" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(520, 360)
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/LowerPlatform"]
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/LowerPlatform"]
+shape = SubResource("RectangleShape2D_plat_1x4")
+
+[node name="ChoiceBlock_1x1" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(340, 360)
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/ChoiceBlock_1x1"]
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/ChoiceBlock_1x1"]
+shape = SubResource("RectangleShape2D_plat_1x1")
+
+[node name="Label" type="Label" parent="SketchCorridors/ChoiceBlock_1x1"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_top = 36.0
+offset_right = 70.0
+offset_bottom = 59.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "[1x1 REST BLOCK]"
+horizontal_alignment = 1
+
+[node name="CenterRoomDivider" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(780, 480)
+
+[node name="Sprite1" type="Sprite2D" parent="SketchCorridors/CenterRoomDivider"]
+position = Vector2(0, -100)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="Sprite2" type="Sprite2D" parent="SketchCorridors/CenterRoomDivider"]
+position = Vector2(0, 100)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/CenterRoomDivider"]
+shape = SubResource("RectangleShape2D_plat_1x4")
+rotation = 1.5708
+scale = Vector2(1.3, 1)
+
+[node name="Pillar1" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(900, 260)
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/Pillar1"]
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/Pillar1"]
+shape = SubResource("RectangleShape2D_plat_1x1")
+
+[node name="Pillar2" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(1060, 320)
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/Pillar2"]
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/Pillar2"]
+shape = SubResource("RectangleShape2D_plat_1x1")
+
+[node name="Pillar3" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(940, 520)
+
+[node name="Sprite2D" type="Sprite2D" parent="SketchCorridors/Pillar3"]
+scale = Vector2(4, 4)
+texture = ExtResource("8_metal_1x1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/Pillar3"]
+shape = SubResource("RectangleShape2D_plat_1x1")
+
+[node name="DiagonalWall" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(1040, 690)
+rotation = -0.65
+
+[node name="Sprite1" type="Sprite2D" parent="SketchCorridors/DiagonalWall"]
+position = Vector2(-128, 0)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite2" type="Sprite2D" parent="SketchCorridors/DiagonalWall"]
+position = Vector2(128, 0)
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/DiagonalWall"]
+shape = SubResource("RectangleShape2D_wall_h")
+scale = Vector2(0.27, 1)
+
+[node name="Spike_Diag1" parent="SketchCorridors/DiagonalWall" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(-160, 55)
+rotation = 3.14159
+
+[node name="Spike_Diag2" parent="SketchCorridors/DiagonalWall" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(-80, 55)
+rotation = 3.14159
+
+[node name="Spike_Diag3" parent="SketchCorridors/DiagonalWall" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(0, 55)
+rotation = 3.14159
+
+[node name="Spike_Diag4" parent="SketchCorridors/DiagonalWall" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(80, 55)
+rotation = 3.14159
+
+[node name="Spike_Diag5" parent="SketchCorridors/DiagonalWall" groups=["spikes"] instance=ExtResource("12_spike_scene")]
+position = Vector2(160, 55)
+rotation = 3.14159
+
+[node name="VerticalChuteWall" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(1390, 540)
+
+[node name="Sprite1" type="Sprite2D" parent="SketchCorridors/VerticalChuteWall"]
+position = Vector2(0, -280)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite2" type="Sprite2D" parent="SketchCorridors/VerticalChuteWall"]
+position = Vector2(0, -60)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite3" type="Sprite2D" parent="SketchCorridors/VerticalChuteWall"]
+position = Vector2(0, 160)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite4" type="Sprite2D" parent="SketchCorridors/VerticalChuteWall"]
+position = Vector2(0, 360)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/VerticalChuteWall"]
+shape = SubResource("RectangleShape2D_wall_v")
+scale = Vector2(1, 0.8)
+
+[node name="RightChuteDivider" type="StaticBody2D" parent="SketchCorridors"]
+position = Vector2(1600, 680)
+
+[node name="Sprite1" type="Sprite2D" parent="SketchCorridors/RightChuteDivider"]
+position = Vector2(0, -180)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite2" type="Sprite2D" parent="SketchCorridors/RightChuteDivider"]
+position = Vector2(0, 40)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("6_metal_1x4")
+
+[node name="Sprite3" type="Sprite2D" parent="SketchCorridors/RightChuteDivider"]
+position = Vector2(0, 240)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("7_metal_1x2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SketchCorridors/RightChuteDivider"]
+shape = SubResource("RectangleShape2D_wall_v")
+scale = Vector2(1, 0.6)
+[node name="Asteroids" type="Node2D" parent="."]
+
+[node name="Asteroid_BottomCorridor" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(520, 980)
+speed = 100.0
+move_axis = Vector2(1, 0)
+
+[node name="Asteroid_TopGauntlet" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(500, 100)
+speed = 110.0
+move_axis = Vector2(1, 0)
+
+[node name="Asteroid_CenterRoom1" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(980, 420)
+speed = 115.0
+move_axis = Vector2(0, 1)
+
+[node name="Asteroid_CenterRoom2" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(1160, 240)
+speed = 110.0
+move_axis = Vector2(-1, 0)
+
+[node name="Asteroid_Chute" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(1460, 420)
+speed = 120.0
+move_axis = Vector2(0, 1)
+
+[node name="Asteroid_ExitChannel" parent="Asteroids" groups=["asteroids"] instance=ExtResource("11_asteroid_scene")]
+position = Vector2(1740, 680)
+speed = 105.0
+move_axis = Vector2(0, 1)
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="Checkpoint1" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource("13_checkpoint_scene")]
+position = Vector2(200, 520)
+
+[node name="Checkpoint2" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource("13_checkpoint_scene")]
+position = Vector2(840, 620)
+
+[node name="Checkpoint3" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource("13_checkpoint_scene")]
+position = Vector2(1460, 620)
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="Currency1" parent="Collectibles" groups=["collectibles"] instance=ExtResource("14_currency_scene")]
+position = Vector2(740, 980)
+
+[node name="Currency2" parent="Collectibles" groups=["collectibles"] instance=ExtResource("14_currency_scene")]
+position = Vector2(340, 280)
+
+[node name="Currency3" parent="Collectibles" groups=["collectibles"] instance=ExtResource("14_currency_scene")]
+position = Vector2(1000, 260)
+
+[node name="Currency4" parent="Collectibles" groups=["collectibles"] instance=ExtResource("14_currency_scene")]
+position = Vector2(1460, 840)
+
+[node name="CorruptionHazards" type="Node2D" parent="."]
+
+[node name="Corruption1" parent="CorruptionHazards" instance=ExtResource("17_corruption_scene")]
+position = Vector2(1740, 520)
+scale = Vector2(2.5, 2.5)
+corruption_stage = 1
+
+[node name="Corruption2" parent="CorruptionHazards" instance=ExtResource("17_corruption_scene")]
+position = Vector2(1740, 320)
+scale = Vector2(2.5, 2.5)
+corruption_stage = 2
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(140, 950)
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("9_player_scene")]
+position = Vector2(140, 950)
+
+[node name="Ball" parent="." instance=ExtResource("10_ball_scene")]
+position = Vector2(140, 950)
+
+[node name="PhysicalButton" parent="." instance=ExtResource("15_button_scene")]
+position = Vector2(1740, 140)
+
+[node name="HUDLayer" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="MarginContainer" parent="HUDLayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 66.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 28
+
+[node name="PanelContainer" type="PanelContainer" parent="HUDLayer/TopBar"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hud")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUDLayer/TopBar/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDLayer/TopBar/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="SectorLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "SECTOR 01: THE RECOIL RUN"
+
+[node name="Spacer" type="Control" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="ModeLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "🟢 RECON RUN"
+
+[node name="Spacer2" type="Control" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EnergyLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 17
+text = "⚡ Energy: 0"
+
+[node name="Spacer3" type="Control" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
+[node name="DeathsLabel" type="Label" parent="HUDLayer/TopBar/PanelContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 17
+text = "💀 Deaths: 0"
+
+[node name="IntroBanner" type="Label" parent="HUDLayer"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -25.0
+offset_right = 300.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.3, 0.95, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 28
+text = "OBJECTIVE: HIT EXTRACTION BUTTON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CheckpointPopup" type="Label" parent="HUDLayer"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -120.0
+offset_right = 250.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.5, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 20
+text = "✓ CHECKPOINT RECORDED"
+horizontal_alignment = 1
+
+[node name="Vignette" type="TextureRect" parent="HUDLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+
+[node name="BottomHint" type="Label" parent="HUDLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -54.0
+offset_right = 400.0
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 0.8)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 14
+text = "[HOLD LMB] Aim & Shoot | [RMB] Recall Ball | [R] Respawn | [ESC] Menu"
+horizontal_alignment = 1
+
+[node name="DeathFlash" type="ColorRect" parent="HUDLayer"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.9, 0.1, 0.1, 0.5)
+
+[node name="VictoryPanel" type="PanelContainer" parent="HUDLayer"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -140.0
+offset_right = 300.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vic")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUDLayer/VictoryPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUDLayer/VictoryPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 24
+text = "SECTOR ESCAPED!"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.88, 0.95, 1)
+theme_override_font_sizes/font_size = 14
+text = "Physical extraction button triggered!
+Verity momentum propulsion confirmed."
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="PlayAgainButton" type="Button" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "RETRY"
+
+[node name="NextButton" type="Button" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(170, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = "NEXT SECTOR"
+
+[node name="PrizeButton" type="Button" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = "★ WATCH PRIZE"
+
+[node name="MenuButton" type="Button" parent="HUDLayer/VictoryPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "MAIN MENU"
+
+[node name="VideoModal" type="PanelContainer" parent="HUDLayer"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vic")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUDLayer/VideoModal"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PrizeHeader" type="Label" parent="HUDLayer/VideoModal/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 22
+text = "★ VERITY CLASSIFIED RECORDING (ROUND 1 PRIZE) ★"
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="HUDLayer/VideoModal/VBoxContainer"]
+layout_mode = 2
+
+[node name="PrizeVideoPlayer" type="VideoStreamPlayer" parent="HUDLayer/VideoModal/VBoxContainer/CenterContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(960, 540)
+layout_mode = 2
+stream = ExtResource("16_prize_video")
+expand = true
+
+[node name="CloseVideoBtn" type="Button" parent="HUDLayer/VideoModal/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 1)
+theme_override_font_sizes/font_size = 14
+text = "[ CLOSE RECORDING ]"

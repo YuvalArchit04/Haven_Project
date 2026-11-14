@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://spike.gd" id="1_spike_script"]
+[ext_resource type="Texture2D" path="res://assets/spike.png" id="2_spike_tex"]
+
+[node name="Spike" type="Area2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_spike_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_spike_tex")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-22, 22, 0, -22, 22, 22)

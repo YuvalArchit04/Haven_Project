@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://corruption_hazard.gd" id="1_hazard_script"]
+[ext_resource type="Texture2D" path="res://assets/Corruption-1.png" id="2_c1"]
+[ext_resource type="Texture2D" path="res://assets/Corruption-2.png" id="3_c2"]
+[ext_resource type="Texture2D" path="res://assets/Corruption-3.png" id="4_c3"]
+[ext_resource type="Texture2D" path="res://assets/Corruption-4.png" id="5_c4"]
+[ext_resource type="Texture2D" path="res://assets/Corruption-5.png" id="6_c5"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_corruption"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_c1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_c2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_c3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_c4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_c5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hazard"]
+size = Vector2(28, 28)
+
+[node name="CorruptionHazard" type="Area2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_hazard_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(4, 4)
+texture = ExtResource("2_c1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_hazard")

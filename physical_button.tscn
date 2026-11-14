@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://physical_button.gd" id="1_btn_script"]
+[ext_resource type="Texture2D" path="res://assets/Button- Base .png" id="2_base_tex"]
+[ext_resource type="Texture2D" path="res://assets/Button- Button.png" id="3_cap_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_btn"]
+size = Vector2(48, 48)
+
+[node name="PhysicalButton" type="Area2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_btn_script")
+
+[node name="BaseSprite" type="Sprite2D" parent="."]
+scale = Vector2(6, 6)
+texture = ExtResource("2_base_tex")
+
+[node name="CapSprite" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+scale = Vector2(6, 6)
+texture = ExtResource("3_cap_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_btn")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -90.0
+offset_top = 34.0
+offset_right = 90.0
+offset_bottom = 57.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "[PRESS BUTTON TO ESCAPE]"
+horizontal_alignment = 1
