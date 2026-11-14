@@ -12,6 +12,8 @@ const GameState = preload("res://game_state.gd")
 @onready var easy_mode_btn: Button = %EasyModeButton
 @onready var hard_mode_btn: Button = %HardModeButton
 @onready var close_mode_btn: Button = %CloseModeButton
+@onready var speed_slider: HSlider = get_node_or_null("%SpeedSlider")
+@onready var speed_label: Label = get_node_or_null("%SpeedLabel")
 
 @onready var skins_button: Button = get_node_or_null("%SkinsButton")
 @onready var skins_panel: PanelContainer = get_node_or_null("%SkinsPanel")
@@ -30,6 +32,11 @@ func _ready() -> void:
 		mode_panel.visible = false
 	if skins_panel:
 		skins_panel.visible = false
+	
+	if speed_slider:
+		speed_slider.value = GameState.ball_speed_multiplier
+		speed_slider.value_changed.connect(_on_speed_slider_changed)
+		_update_speed_label(speed_slider.value)
 	
 	if play_button:
 		play_button.pressed.connect(_on_play_pressed)
@@ -50,6 +57,14 @@ func _ready() -> void:
 		hard_mode_btn.pressed.connect(_on_hard_mode_selected)
 	if close_mode_btn:
 		close_mode_btn.pressed.connect(_on_close_mode_pressed)
+
+func _on_speed_slider_changed(val: float) -> void:
+	GameState.ball_speed_multiplier = val
+	_update_speed_label(val)
+
+func _update_speed_label(val: float) -> void:
+	if speed_label:
+		speed_label.text = "BALL SPEED: %d%%" % int(val * 100.0)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):

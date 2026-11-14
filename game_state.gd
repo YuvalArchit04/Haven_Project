@@ -2,6 +2,7 @@ extends RefCounted
 
 static var easy_mode: bool = true
 static var sound_enabled: bool = true
+static var ball_speed_multiplier: float = 1.15
 
 static var total_gems: int = 10
 static var current_skin: String = "Classic Yellow"

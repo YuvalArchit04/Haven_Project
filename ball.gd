@@ -1,11 +1,22 @@
 extends CharacterBody2D
 
+const GameState = preload("res://game_state.gd")
+
 @export var player: CharacterBody2D
-@export var throw_speed: float = 480.0
+@export var base_throw_speed: float = 540.0
 @export var ball_friction: float = 120.0
-@export var recall_speed: float = 520.0
+@export var base_recall_speed: float = 580.0
 @export var dash_multiplier: float = 0.95
 @export var catch_radius: float = 44.0
+
+var throw_speed: float:
+	get:
+		return base_throw_speed * GameState.ball_speed_multiplier
+
+var recall_speed: float:
+	get:
+		return base_recall_speed * GameState.ball_speed_multiplier
+
 enum State { READY, AIMING, THROWN, RECALLING }
 var current_state: State = State.READY
 
