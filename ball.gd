@@ -118,16 +118,15 @@ func _physics_process(delta):
 					col.disabled = true
 				current_state = State.READY
 				
-				# 0.1s hit-stop delay before motion starts
 				if target_player:
 					target_player.velocity = Vector2.ZERO
-					var timer = get_tree().create_timer(0.1)
+					var timer = get_tree().create_timer(0.2)
 					timer.timeout.connect(func():
 						if target_player:
 							target_player.velocity = impact_dir * recall_speed * dash_multiplier
 							var game = target_player.get_parent()
 							if game and game.has_method("add_trauma"):
-								game.add_trauma(0.25)
+								game.add_trauma(0.45)
 					)
 			else:
 				var collision = move_and_collide(step_move)
