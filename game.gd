@@ -19,6 +19,10 @@ const GameState = preload("res://game_state.gd")
 @onready var video_modal: PanelContainer = get_node_or_null("%VideoModal")
 @onready var prize_video: VideoStreamPlayer = get_node_or_null("%PrizeVideoPlayer")
 @onready var close_video_btn: Button = get_node_or_null("%CloseVideoBtn")
+@onready var pause_menu: PanelContainer = get_node_or_null("%PauseMenu")
+@onready var resume_btn: Button = get_node_or_null("%ResumeButton")
+@onready var restart_btn: Button = get_node_or_null("%RestartButton")
+@onready var pause_quit_btn: Button = get_node_or_null("%PauseQuitButton")
 
 @export var next_scene_path: String = "res://game_level_2.tscn"
 
@@ -33,6 +37,7 @@ var trauma_power: float = 2.0
 var max_offset: Vector2 = Vector2(16.0, 16.0)
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	var am = get_node_or_null("/root/AudioManager")
 	if am and am.has_method("play_music"):
 		am.play_music()
@@ -76,11 +81,25 @@ func _ready() -> void:
 		prize_btn.pressed.connect(_on_prize_pressed)
 	if close_video_btn and video_modal:
 		close_video_btn.pressed.connect(_on_close_video_pressed)
+	if resume_btn:
+		resume_btn.pressed.connect(_resume_game)
+	if restart_btn:
+		restart_btn.pressed.connect(func():
+			_resume_game()
+			get_tree().reload_current_scene()
+		)
+	if pause_quit_btn:
+		pause_quit_btn.pressed.connect(func():
+			_resume_game()
+			get_tree().change_scene_to_file("res://main_menu.tscn")
+		)
 		
 	if victory_panel:
 		victory_panel.visible = false
 	if video_modal:
 		video_modal.visible = false
+	if pause_menu:
+		pause_menu.visible = false
 	if death_flash:
 		death_flash.modulate.a = 0.0
 	if checkpoint_popup:
@@ -102,6 +121,9 @@ func _process(delta: float) -> void:
 				randf_range(-1.0, 1.0) * max_offset.x * amount,
 				randf_range(-1.0, 1.0) * max_offset.y * amount
 			)
+
+func add_trauma(amount: float) -> void:
+	trauma = clamp(trauma + amount, 0.0, 1.0)
 
 func _setup_cinematic_intro() -> void:
 	var cam: Camera2D = player.get_node_or_null("Camera2D")
@@ -137,7 +159,15 @@ func _setup_cinematic_intro() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		get_tree().change_scene_to_file("res://main_menu.tscn")
+		if video_modal and video_modal.visible:
+			_on_close_video_pressed()
+		elif pause_menu:
+			if get_tree().paused:
+				_resume_game()
+			else:
+				_pause_game()
+		else:
+			get_tree().change_scene_to_file("res://main_menu.tscn")
 	elif event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_R:
 			respawn_player()
@@ -246,3 +276,15 @@ func _on_close_video_pressed() -> void:
 	if video_modal and prize_video:
 		prize_video.stop()
 		video_modal.visible = false
+
+func _pause_game() -> void:
+	if pause_menu:
+		pause_menu.visible = true
+		get_tree().paused = true
+		if resume_btn:
+			resume_btn.grab_focus()
+
+func _resume_game() -> void:
+	if pause_menu:
+		pause_menu.visible = false
+	get_tree().paused = false
