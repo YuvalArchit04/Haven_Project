@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c1yh7tl5twgw3"]
+
+[ext_resource type="Script" uid="uid://dpag2kjscpvig" path="res://player.gd" id="1_wtcfe"]
+
+[node name="Node2D" type="Node2D" unique_id=1766698405]
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=1916297605]
+script = ExtResource("1_wtcfe")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=534954331]
