@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://4w5hok5umljj"]
+
+[ext_resource type="Texture2D" uid="uid://beej6pwnek8hj" path="res://Ball-_100-75.png" id="1_x8fbi"]
+
+[node name="Ball" type="CharacterBody2D" unique_id=843452850]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=674963935]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("1_x8fbi")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=189718923]
+scale = Vector2(1.5, 1.5)
+polygon = PackedVector2Array(-2, -4, -2, -3, -3, -3, -3, -2, -4, -2, -4, 2, -3, 2, -3, 3, -2, 3, -2, 4, 2, 4, 2, 3, 3, 3, 3, 2, 4, 2, 4, -2, 3, -2, 3, -3, 2, -3, 2, -4)

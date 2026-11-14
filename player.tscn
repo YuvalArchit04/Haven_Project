@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://sxeh5qou6d6d"]
+
+[ext_resource type="Script" uid="uid://dpag2kjscpvig" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="Texture2D" uid="uid://w715a261cdxr" path="res://Verity.png" id="2_onrkg"]
+
+[node name="Player" type="CharacterBody2D" unique_id=570454734]
+script = ExtResource("1_4flbx")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1242500472]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=529224578]
+scale = Vector2(4, 4)
+texture = ExtResource("2_onrkg")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1232576061]
+visible = false
+scale = Vector2(4, 4)
+polygon = PackedVector2Array(-3, -5, -3, -4, -4, -4, -4, -3, -5, -3, -5, 3, -4, 3, -4, 4, -3, 4, -3, 5, 3, 5, 3, 4, 4, 4, 4, 3, 5, 3, 5, -3, 4, -3, 4, -4, 3, -4, 3, -5)
