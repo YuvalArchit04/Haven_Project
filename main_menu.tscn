@@ -147,6 +147,18 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 text = "HOW TO PLAY"
 
+[node name="SkinsButton" type="Button" parent="CenterContainer/MenuPanel/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.6, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "★ SKINS & GEMS"
+
 [node name="quit" type="Button" parent="CenterContainer/MenuPanel/Margin/VBox" unique_id=2065881879]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 44)
@@ -272,6 +284,65 @@ text = "• HOLD LMB: Aim dotted guide line
 • REACH THE BUTTON: Hit the physical button to win."
 
 [node name="CloseTutorialButton" type="Button" parent="TutorialPanel/MarginContainer/VBoxContainer" unique_id=1178868396]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 38)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "BACK"
+
+[node name="SkinsPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -240.0
+offset_right = 260.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pixel_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="SkinsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SkinsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SkinsTitle" type="Label" parent="SkinsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 18
+text = "VERITY SKINS VAULT"
+horizontal_alignment = 1
+
+[node name="GemsLabel" type="Label" parent="SkinsPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "💎 Gems: 10"
+horizontal_alignment = 1
+
+[node name="SkinsList" type="VBoxContainer" parent="SkinsPanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="CloseSkinsButton" type="Button" parent="SkinsPanel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(140, 38)
 layout_mode = 2

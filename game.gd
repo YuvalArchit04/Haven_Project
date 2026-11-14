@@ -229,6 +229,7 @@ func respawn_player() -> void:
 
 func _on_currency_collected(amount: int) -> void:
 	energy_collected += amount
+	GameState.total_gems += amount
 	_update_hud()
 	var am = get_node_or_null("/root/AudioManager")
 	if am and am.has_method("play_tick"):

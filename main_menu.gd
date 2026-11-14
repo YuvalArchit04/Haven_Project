@@ -13,6 +13,12 @@ const GameState = preload("res://game_state.gd")
 @onready var hard_mode_btn: Button = %HardModeButton
 @onready var close_mode_btn: Button = %CloseModeButton
 
+@onready var skins_button: Button = get_node_or_null("%SkinsButton")
+@onready var skins_panel: PanelContainer = get_node_or_null("%SkinsPanel")
+@onready var gems_label: Label = get_node_or_null("%GemsLabel")
+@onready var skins_list: VBoxContainer = get_node_or_null("%SkinsList")
+@onready var close_skins_btn: Button = get_node_or_null("%CloseSkinsButton")
+
 func _ready() -> void:
 	var am = get_node_or_null("/root/AudioManager")
 	if am and am.has_method("play_music"):
@@ -22,6 +28,8 @@ func _ready() -> void:
 		tutorial_panel.visible = false
 	if mode_panel:
 		mode_panel.visible = false
+	if skins_panel:
+		skins_panel.visible = false
 	
 	if play_button:
 		play_button.pressed.connect(_on_play_pressed)
@@ -31,6 +39,10 @@ func _ready() -> void:
 		quit_button.pressed.connect(_on_quit_pressed)
 	if close_tutorial_btn:
 		close_tutorial_btn.pressed.connect(_on_close_tutorial_pressed)
+	if skins_button:
+		skins_button.pressed.connect(_on_skins_pressed)
+	if close_skins_btn:
+		close_skins_btn.pressed.connect(_on_close_skins_pressed)
 		
 	if easy_mode_btn:
 		easy_mode_btn.pressed.connect(_on_easy_mode_selected)
@@ -45,6 +57,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_on_close_mode_pressed()
 		elif tutorial_panel and tutorial_panel.visible:
 			_on_close_tutorial_pressed()
+		elif skins_panel and skins_panel.visible:
+			_on_close_skins_pressed()
 		else:
 			_on_quit_pressed()
 
@@ -91,6 +105,74 @@ func _on_close_tutorial_pressed() -> void:
 func _on_quit_pressed() -> void:
 	_play_click_sfx()
 	get_tree().quit()
+
+func _on_skins_pressed() -> void:
+	_play_click_sfx()
+	if skins_panel:
+		skins_panel.visible = true
+		_refresh_skins_ui()
+		if close_skins_btn:
+			close_skins_btn.grab_focus()
+
+func _on_close_skins_pressed() -> void:
+	_play_click_sfx()
+	if skins_panel:
+		skins_panel.visible = false
+		if skins_button:
+			skins_button.grab_focus()
+
+func _refresh_skins_ui() -> void:
+	if gems_label:
+		gems_label.text = "💎 Gems: %d" % GameState.total_gems
+	if not skins_list:
+		return
+	
+	for child in skins_list.get_children():
+		child.queue_free()
+	
+	for skin_name in GameState.SKINS.keys():
+		var info = GameState.SKINS[skin_name]
+		var cost = info["cost"]
+		var is_unlocked = skin_name in GameState.unlocked_skins
+		var is_equipped = (skin_name == GameState.current_skin)
+		
+		var row = HBoxContainer.new()
+		row.custom_minimum_size = Vector2(0, 36)
+		
+		var name_lbl = Label.new()
+		name_lbl.text = skin_name
+		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		name_lbl.add_theme_color_override("font_color", info["color"])
+		name_lbl.add_theme_font_size_override("font_size", 12)
+		row.add_child(name_lbl)
+		
+		var action_btn = Button.new()
+		action_btn.custom_minimum_size = Vector2(140, 32)
+		action_btn.add_theme_font_size_override("font_size", 11)
+		
+		if is_equipped:
+			action_btn.text = "EQUIPPED"
+			action_btn.disabled = true
+		elif is_unlocked:
+			action_btn.text = "EQUIP"
+			action_btn.pressed.connect(func():
+				_play_click_sfx()
+				GameState.current_skin = skin_name
+				_refresh_skins_ui()
+			)
+		else:
+			action_btn.text = "BUY (%d 💎)" % cost
+			action_btn.disabled = (GameState.total_gems < cost)
+			action_btn.pressed.connect(func():
+				if GameState.total_gems >= cost:
+					_play_click_sfx()
+					GameState.total_gems -= cost
+					GameState.unlocked_skins.append(skin_name)
+					GameState.current_skin = skin_name
+					_refresh_skins_ui()
+			)
+		row.add_child(action_btn)
+		skins_list.add_child(row)
 
 func _play_click_sfx() -> void:
 	var am = get_node_or_null("/root/AudioManager")
