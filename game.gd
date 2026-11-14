@@ -33,7 +33,6 @@ var trauma_power: float = 2.0
 var max_offset: Vector2 = Vector2(16.0, 16.0)
 
 func _ready() -> void:
-	# Ensure music is playing
 	var am = get_node_or_null("/root/AudioManager")
 	if am and am.has_method("play_music"):
 		am.play_music()
@@ -42,36 +41,28 @@ func _ready() -> void:
 		default_spawn_pos = respawn_point.global_position
 	current_checkpoint_pos = default_spawn_pos
 	
-	# Wire up player and ball
 	if player and ball:
 		ball.player = player
 		if not player.is_in_group("player"):
 			player.add_to_group("player")
-			
-		# Cinematic FOV Overview intro
 		_setup_cinematic_intro()
 	
-	# Connect checkpoints
 	for cp in get_tree().get_nodes_in_group("checkpoints"):
 		if cp.has_signal("activated"):
 			cp.activated.connect(_on_checkpoint_activated)
 	
-	# Connect spikes
 	for spike in get_tree().get_nodes_in_group("spikes"):
 		if spike.has_signal("player_hit"):
 			spike.player_hit.connect(respawn_player)
 	
-	# Connect collectibles
 	for item in get_tree().get_nodes_in_group("collectibles"):
 		if item.has_signal("collected"):
 			item.collected.connect(_on_currency_collected)
 	
-	# Connect physical push button
 	var btn = get_node_or_null("PhysicalButton")
 	if btn and btn.has_signal("button_activated"):
 		btn.button_activated.connect(_on_button_activated)
 		
-	# UI buttons
 	if play_again_btn:
 		play_again_btn.pressed.connect(_on_play_again_pressed)
 	if next_btn:
@@ -98,12 +89,10 @@ func _ready() -> void:
 	_update_hud()
 
 func _process(delta: float) -> void:
-	# Reset player position ONLY if they touch the bottom-most ground
 	if player and not is_level_ended:
 		if player.global_position.y >= 995.0:
 			respawn_player()
 
-	# Screen shake decay
 	if trauma > 0.0:
 		trauma = max(0.0, trauma - delta * 1.5)
 		var cam: Camera2D = player.get_node_or_null("Camera2D") if player else null
@@ -124,7 +113,6 @@ func _setup_cinematic_intro() -> void:
 	cam.limit_right = 1920
 	cam.limit_bottom = 1080
 	
-	# Start with full map overview
 	cam.position_smoothing_enabled = false
 	cam.global_position = Vector2(960, 540)
 	cam.zoom = Vector2(1.0, 1.0)
@@ -133,7 +121,6 @@ func _setup_cinematic_intro() -> void:
 		intro_banner.visible = true
 		intro_banner.modulate.a = 1.0
 	
-	# Smoothly zoom into Verity
 	var intro_timer = get_tree().create_timer(1.2)
 	intro_timer.timeout.connect(func():
 		var tween = create_tween().set_parallel(true)
@@ -183,33 +170,28 @@ func respawn_player() -> void:
 	_update_hud()
 	trauma = 0.6
 	
-	# Audio death
 	var am = get_node_or_null("/root/AudioManager")
 	if am and am.has_method("play_death"):
 		am.play_death()
 	
-	# Visual death flash
 	if death_flash:
 		death_flash.modulate.a = 0.85
 		var flash_tween = create_tween()
 		flash_tween.tween_property(death_flash, "modulate:a", 0.0, 0.35)
 	
-	# Determine respawn position based on mode
 	var target_pos = default_spawn_pos
 	if GameState.easy_mode:
 		target_pos = current_checkpoint_pos
 	
-	# Reset player position & momentum
 	if player:
 		player.global_position = target_pos
 		player.velocity = Vector2.ZERO
 		
-	# Reset ball
 	if ball:
 		ball.global_position = target_pos
 		ball.velocity = Vector2.ZERO
 		if "current_state" in ball:
-			ball.current_state = 0 # State.READY
+			ball.current_state = 0
 		ball.visible = false
 		var col = ball.get_node_or_null("CollisionPolygon2D")
 		if col:

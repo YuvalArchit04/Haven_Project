@@ -34,7 +34,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	if (current_state == State.AIMING or is_aiming) and player:
-		# Draw dotted aim line from player toward mouse
 		var mouse_pos = get_global_mouse_position()
 		var dir = player.global_position.direction_to(mouse_pos)
 		if dir == Vector2.ZERO:
@@ -44,12 +43,9 @@ func _draw() -> void:
 		var dot_spacing: float = 12.0
 		var dot_radius: float = 3.0
 		var count = int(line_len / dot_spacing)
-		
-		# Draw aim trajectory from player center (in ball local space)
 		var origin = to_local(player.global_position)
 		for i in range(1, count + 1):
 			var pt = origin + dir * (i * dot_spacing)
-			# Crisp high-contrast retro dots
 			draw_circle(pt, dot_radius + 1.0, Color(0.05, 0.05, 0.08, 0.9))
 			draw_circle(pt, dot_radius, Color(0.3, 0.95, 1.0, 0.95))
 
@@ -61,18 +57,19 @@ func _shoot() -> void:
 	if dir == Vector2.ZERO:
 		dir = Vector2.RIGHT
 		
-	# Zero out player velocity completely so they do NOT move or drift when throwing
-	player.velocity = Vector2.ZERO
+	if player.has_method("freeze"):
+		player.freeze(0.2)
+	else:
+		player.velocity = Vector2.ZERO
 	
-	# Offset spawn outside player body so ball never overlaps player
-	global_position = player.global_position + dir * 36.0
+	global_position = player.global_position + dir * 40.0
 	visible = true
 	var col = get_node_or_null("CollisionPolygon2D")
 	if col:
 		col.disabled = false
 	
 	velocity = dir * throw_speed
-	throw_timer = 0.35 # Immunity timer
+	throw_timer = 0.35
 	current_state = State.THROWN
 	
 	var am = get_node_or_null("/root/AudioManager")
@@ -107,18 +104,11 @@ func _physics_process(delta):
 			var dist = global_position.distance_to(player.global_position)
 			var dir = global_position.direction_to(player.global_position)
 			
-			# Fly directly straight towards player with a controlled fixed speed (no endless orbiting slingshot)
 			velocity = dir * recall_speed
 			var step_move = velocity * delta
 			
-			# Check catch if ball reaches Verity
 			if throw_timer <= 0.0 and (dist <= catch_radius or dist <= step_move.length() + 8.0):
-				# Impact direction points from ball towards player center
-				var impact_dir = dir
-				if impact_dir == Vector2.ZERO:
-					impact_dir = Vector2.DOWN
-				
-				# Push player cleanly with controlled impulse
+				var impact_dir = dir if dir != Vector2.ZERO else Vector2.DOWN
 				player.velocity = impact_dir * recall_speed * dash_multiplier
 				
 				velocity = Vector2.ZERO
@@ -130,5 +120,4 @@ func _physics_process(delta):
 			else:
 				var collision = move_and_collide(step_move)
 				if collision:
-					# If blocked by wall on way to player, slide or re-steer directly
 					velocity = velocity.bounce(collision.get_normal())
